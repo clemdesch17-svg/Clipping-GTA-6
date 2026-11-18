@@ -35,12 +35,13 @@ def ytdlp(*args):
     return [json.loads(l) for l in out.stdout.splitlines() if l.startswith("{")]
 
 
-def top_clips(login, wanted, used, period="7d", scan=40):
+def top_clips(login, wanted, used, period="7d", scan=40, check=12):
     """Most viewed GTA clips of a channel, skipping used ones and duplicates."""
     listing = ytdlp("--flat-playlist", "--playlist-end", str(scan), "-j",
                     f"https://www.twitch.tv/{login}/clips?filter=clips&range={period}")
     picked = []
-    for entry in sorted(listing, key=lambda e: -(e.get("view_count") or 0)):
+    ranked = sorted(listing, key=lambda e: -(e.get("view_count") or 0))
+    for entry in ranked[:check]:      # only the top ones: keeps the daily scan fast
         slug = entry["url"].rstrip("/").split("/")[-1]
         if slug in used:
             continue
@@ -120,7 +121,8 @@ def render(date):
         words = [dict(w, s=w["s"] - start, e=w["e"] - start)
                  for w in words if start <= w["s"] < end]
         render_clip(str(d / "src.mp4"), str(out_dir / f"{name}.mp4"),
-                    start, end, c["facecam"], c["hook"], words)
+                    start, end, c["facecam"], c["hook"], words,
+                    kicker=f"{c['streamer']} · Twitch")
         (out_dir / f"{name}.txt").write_text(c["description"] + "\n")
         history[c["slug"]] = {"date": date, "streamer": c["streamer"]}
         print(f"OK {out_dir / name}.mp4")
