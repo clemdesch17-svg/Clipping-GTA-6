@@ -18,8 +18,9 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
    - `hook` : titre d'accroche affiché sur la vidéo, ≤ 45 caractères, sans emoji, nom du streamer + situation drôle/choc
      (ex. « Squeezie n'aide plus personne sur GTA 6 », « Le roi de l'infiltration sur GTA 6 »).
    - `start` / `end` (secondes) : couper les blancs du début, finir juste après la punchline. Cible 15–40 s.
-   - `description` : 1 phrase punchy + emojis, puis `🎥 Twitch : <Nom>`, puis
-     `#gta6 #gtavi #<streamer> #twitch #gaming #streamer #fyp #pourtoi`.
+   - `description` : 1 phrase punchy + emojis, puis une QUESTION pour faire commenter
+     (« T'aurais fait quoi à sa place ? 👇 »), puis `🎥 Twitch : <Nom>`, puis
+     `#gta6 #gtavi #gta6fr #<streamer> #twitchfr #streamerfr #gaming #fyp #pourtoi`.
 3. `python3 daily.py render` → `output/<date>/<Streamer>/NN.mp4` + `NN.txt` (description).
 4. Vérifier visuellement 1 image par vidéo (facecam correcte, titre lisible, sous-titres sans chevauchement).
    Si la facecam est mauvaise : mettre `"facecam": [x, y, w, h]` (repère 1920x1080) ou `null` dans le manifest et relancer `render`.

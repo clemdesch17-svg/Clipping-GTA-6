@@ -68,7 +68,7 @@ def default_hook(title, streamer):
 def default_description(clip):
     tag = re.sub(r"\W", "", clip["streamer"].lower())
     return (f"{clip['hook']} 😂🔥\n🎥 Twitch : {clip['streamer']}\n"
-            f"#gta6 #gtavi #{tag} #twitch #gaming #streamer #fyp #pourtoi")
+            f"#gta6 #gtavi #gta6fr #{tag} #twitchfr #streamerfr #gaming #fyp #pourtoi")
 
 
 def prepare(date):
