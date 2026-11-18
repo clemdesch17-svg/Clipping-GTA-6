@@ -20,6 +20,9 @@ W, H = 1080, 1920
 FONT = "Inter Black"
 HIGHLIGHT = "&H0000F0FF&"  # ASS colours are BGR: yellow
 WORDS_PER_LINE = 3
+# Phrases Whisper invents on music / silence.
+HALLUCINATIONS = ("amara.org", "sous-titres réalisés", "sous -titres réalisés",
+                  "merci d'avoir regardé", "abonnez-vous")
 
 
 def run(cmd):
@@ -38,8 +41,20 @@ def transcribe(src, start, end, model_size="small"):
     model = WhisperModel(model_size, device="cpu", compute_type="int8")
     segments, _ = model.transcribe(audio, language="fr", word_timestamps=True,
                                    vad_filter=True)
-    return [{"w": w.word.strip(), "s": w.start, "e": w.end}
-            for seg in segments for w in seg.words if w.word.strip()]
+    words = []
+    for seg in segments:
+        if any(h in seg.text.lower() for h in HALLUCINATIONS):
+            continue
+        for w in seg.words:
+            txt = w.word.strip()
+            if not txt:
+                continue
+            # Whisper splits "c'était" / "fais-la" into two tokens: glue them.
+            if words and (txt[0] in "'’-" or words[-1]["w"][-1] in "'’"):
+                words[-1].update(w=words[-1]["w"] + txt, e=w.end)
+            else:
+                words.append({"w": txt, "s": w.start, "e": w.end})
+    return words
 
 
 def ts(t):
@@ -52,7 +67,7 @@ def build_ass(words, title, sub_y, title_y):
 ScriptType: v4.00+
 PlayResX: {W}
 PlayResY: {H}
-WrapStyle: 2
+WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
@@ -94,25 +109,39 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return head + "\n".join(lines) + "\n"
 
 
-def render(src, out, start, end, facecam, title, words):
-    fx, fy, fw, fh = facecam
-    cam_h = round(W * fh / fw / 2) * 2          # facecam scaled to full width
-    game_h = H - cam_h
-    crop_w = round(1080 * W / game_h / 2) * 2   # gameplay crop from 1080p source
+def layout(facecam):
+    """Return (filter graph, subtitle y, title y) for the vertical layout."""
+    if facecam:
+        # Facecam band on top, gameplay below (centre crop, avoids side cams).
+        fx, fy, fw, fh = facecam
+        cam_h = round(W * fh / fw / 2) * 2
+        game_h = H - cam_h
+        crop_w = round(1080 * W / game_h / 2) * 2
+        vf = (f"[0:v]scale=1920:1080,split[a][b];"
+              f"[a]crop={fw}:{fh}:{fx}:{fy},scale={W}:{cam_h}[cam];"
+              f"[b]crop={crop_w}:1080:(in_w-{crop_w})/2:0,scale={W}:{game_h}[game];"
+              f"[cam][game]vstack")
+        return vf, cam_h + int(game_h * 0.62), cam_h
+    # No facecam: 4:5 gameplay crop on a blurred background.
+    game_h = 1350
+    vf = (f"[0:v]scale=1920:1080,split[a][b];"
+          f"[a]crop=608:1080,scale={W}:{H},boxblur=30:2,eq=brightness=-0.15[bg];"
+          f"[b]crop=864:1080,scale={W}:{game_h}[game];"
+          f"[bg][game]overlay=0:{(H - game_h) // 2}")
+    top = (H - game_h) // 2
+    return vf, top + int(game_h * 0.72), top
 
+
+def render(src, out, start, end, facecam, title, words):
+    vf, sub_y, title_y = layout(facecam)
     with tempfile.TemporaryDirectory() as tmp:
         ass = Path(tmp) / "subs.ass"
-        ass.write_text(build_ass(words, title, sub_y=cam_h + int(game_h * 0.62),
-                                 title_y=cam_h), encoding="utf-8")
-        vf = (
-            f"[0:v]scale=1920:1080,split[a][b];"
-            f"[a]crop={fw}:{fh}:{fx}:{fy},scale={W}:{cam_h}[cam];"
-            f"[b]crop={crop_w}:1080:(in_w-{crop_w})/2:0,scale={W}:{game_h}[game];"
-            f"[cam][game]vstack,ass={ass}[v]"
-        )
+        ass.write_text(build_ass(words, title, sub_y=sub_y, title_y=title_y),
+                       encoding="utf-8")
         run(["ffmpeg", "-v", "error", "-y", "-ss", str(start), "-to", str(end),
-             "-i", src, "-filter_complex", vf, "-map", "[v]", "-map", "0:a",
-             "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+             "-i", src, "-filter_complex", f"{vf},ass={ass}[v]",
+             "-map", "[v]", "-map", "0:a",
+             "-c:v", "libx264", "-preset", "medium", "-crf", "23",
              "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
              "-movflags", "+faststart", out])
 
@@ -124,8 +153,8 @@ def main():
     p.add_argument("output")
     p.add_argument("--start", type=float, default=0)
     p.add_argument("--end", type=float, required=True)
-    p.add_argument("--facecam", default="0,0,400,225",
-                   help="x,y,w,h of the facecam in the 1920x1080 source")
+    p.add_argument("--facecam", default="auto",
+                   help="x,y,w,h in the 1920x1080 source, 'auto' or 'none'")
     p.add_argument("--title", default="")
     p.add_argument("--words", help="cached word timestamps JSON (skip Whisper)")
     a = p.parse_args()
@@ -136,8 +165,14 @@ def main():
         words = transcribe(a.input, a.start, a.end)
         if a.words:
             Path(a.words).write_text(json.dumps(words, ensure_ascii=False))
-    render(a.input, a.output, a.start, a.end,
-           [int(v) for v in a.facecam.split(",")], a.title, words)
+    if a.facecam == "auto":
+        from facecam import detect
+        cam = detect(a.input)
+    elif a.facecam == "none":
+        cam = None
+    else:
+        cam = [int(v) for v in a.facecam.split(",")]
+    render(a.input, a.output, a.start, a.end, cam, a.title, words)
     print(f"OK -> {a.output}")
 
 

@@ -2,22 +2,18 @@
 
 ## Fait
 - [x] Env cloud : réseau ouvert ; YouTube bloqué (403), Twitch OK
-- [x] `clipper.py` v1 : 16:9 -> 9:16 (facecam haut / gameplay bas), sous-titres Whisper mot par mot, titre accroche
-- [x] Test validé par l'utilisateur (output/test_bagarre.mp4)
+- [x] `clipper.py` : 16:9 -> 9:16, sous-titres Whisper mot par mot, titre accroche (retour à la ligne), mise en page sans facecam (fond flouté)
+- [x] `facecam.py` : détection auto (visage stable + zone à faible variance temporelle) — vérifiée sur 7 clips Squeezie
+- [x] `daily.py prepare|render` + `streamers.json` + `history.json` (anti-doublon)
+- [x] Filtre strict GTA VI (les clips GTA V de Michou étaient acceptés à tort)
+- [x] Skill `.claude/skills/clip-gta/SKILL.md`
+- [x] Premier lot : 5 clips Squeezie dans output/2026-11-18/Squeezie/, vérifiés image par image
 
-## Plan v2 — Production quotidienne en rotation (EN ATTENTE DE VALIDATION)
-Objectif : chaque jour, 5 clips par streamer, plusieurs streamers en rotation, sans intervention.
+## En attente utilisateur
+- [ ] Retour sur le lot du jour
+- [ ] Lien TikTok -> voir ce qui est faisable côté publication
 
-1. [ ] `streamers.json` : liste des streamers (pseudo Twitch, nb de clips/jour)
-2. [ ] Récupération : clips Twitch publics les plus vus (24 h / 7 j), filtrés GTA (titre ou catégorie),
-       en sautant ceux déjà publiés (`history.json`)
-3. [ ] Détection auto de la facecam (différence entre images : zone fixe + visage) ; repli = sans facecam (fond flouté)
-4. [ ] Montage : `clipper.py` (déjà fait) + coupe auto sur la partie parlée/forte (15–40 s)
-5. [ ] Titre d'accroche + description + hashtags générés à partir de la transcription
-6. [ ] `daily.py` : une commande -> dossier `output/AAAA-MM-JJ/<streamer>/` avec vidéos + textes
-7. [ ] Livraison : dossier Google Drive du jour (pour poster depuis le téléphone)
-8. [ ] Automatisation : tâche planifiée quotidienne
-9. [ ] Skill `.claude/skills/clip-gta/SKILL.md` : style, règles, procédure (écrit par Claude)
-
-## Vérification
-- Lancer `daily.py` sur 2 streamers, contrôler visuellement chaque vidéo (facecam, sous-titres, durée)
+## Prochaines étapes
+- [ ] Livraison quotidienne dans Google Drive
+- [ ] Tâche planifiée quotidienne (prepare -> hooks par Claude -> render -> Drive)
+- [ ] Ajouter des streamers FR qui jouent à GTA 6 (Michou joue encore à GTA V)
