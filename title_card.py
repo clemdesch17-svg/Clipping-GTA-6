@@ -11,6 +11,10 @@ BRAND = json.loads((ROOT / "brand.json").read_text())
 TEXT_FONT = "/usr/share/fonts/opentype/inter/InterDisplay-BlackItalic.otf"
 EMOJI_FONT = "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"
 EMOJI_NATIVE = 109                      # NotoColorEmoji bitmap strike size
+# Owner-supplied emoji images (from their iPhone keyboard) take priority
+# over Noto; add more by dropping PNGs in branding/emoji + map.json.
+EMOJI_DIR = ROOT / "branding" / "emoji"
+EMOJI_MAP = json.loads((EMOJI_DIR / "map.json").read_text()) if (EMOJI_DIR / "map.json").exists() else {}
 
 # Emoji sequences (incl. ZWJ, variation selectors, skin tones, flags).
 EMOJI_RE = re.compile(
@@ -45,6 +49,22 @@ class _Runs:
         return sum(self.font.getlength(s) if k == "t" else self.emoji_px + 4
                    for k, s in self.split(text))
 
+    def emoji_image(self, seq):
+        """Emoji glyph(s) as RGBA: custom PNGs when every char has one, else Noto."""
+        chars = [c for c in seq if c not in "\uFE0F\u200D" and not "\U0001F3FB" <= c <= "\U0001F3FF"]
+        if chars and all(c in EMOJI_MAP for c in chars):
+            parts = [Image.open(EMOJI_DIR / f"{EMOJI_MAP[c]}.png").convert("RGBA") for c in chars]
+            h = max(p.height for p in parts)
+            out = Image.new("RGBA", (sum(p.width for p in parts), h), (0, 0, 0, 0))
+            x = 0
+            for p in parts:
+                out.alpha_composite(p, (x, (h - p.height) // 2))
+                x += p.width
+            return out
+        g = Image.new("RGBA", (EMOJI_NATIVE * 2, EMOJI_NATIVE * 2), (0, 0, 0, 0))
+        ImageDraw.Draw(g).text((0, 0), seq, font=self.emoji_font, embedded_color=True)
+        return g
+
     def draw(self, img, x, y, text, fill, shadow):
         d = ImageDraw.Draw(img)
         for kind, s in self.split(text):
@@ -53,9 +73,8 @@ class _Runs:
                 d.text((x, y), s, font=self.font, fill=fill)
                 x += self.font.getlength(s)
             else:
-                g = Image.new("RGBA", (EMOJI_NATIVE * 2, EMOJI_NATIVE * 2), (0, 0, 0, 0))
-                ImageDraw.Draw(g).text((0, 0), s, font=self.emoji_font, embedded_color=True)
-                bbox = g.getbbox()
+                g = self.emoji_image(s)
+                bbox = g.getbbox() if g else None
                 if bbox:
                     g = g.crop(bbox)
                     g = g.resize((self.emoji_px, int(self.emoji_px * g.height / g.width)),
@@ -72,8 +91,9 @@ def render_title(text, out_png, max_w=940, size=62):
     text = re.sub(r"\b(GTA|GTA VI) (\d+|VI)\b", "\\1\u00a0\\2", text)   # never orphan the "6"
     words = []
     for w in filter(None, text.split(" ")):   # split(" "): keep no-break spaces
-        # Keep emoji-only words glued to the previous word (never alone on a line).
-        if words and not EMOJI_RE.sub("", w).strip():
+        # Emoji / punctuation-only words (😂, », !, ?) stay glued to the previous
+        # word so they never start a line on their own.
+        if words and not any(ch.isalnum() for ch in EMOJI_RE.sub("", w)):
             words[-1] += "\u00a0" + w
         else:
             words.append(w)

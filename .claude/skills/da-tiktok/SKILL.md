@@ -29,7 +29,7 @@ Les réglages vivent dans `brand.json` (couleurs, police, @pseudo) — ne jamais
 - Gameplay légèrement saturé (`eq=saturation=1.2:contrast=1.06`).
 
 ## Ton éditorial
-- Titres : ≤ 45 caractères + 2–3 emojis couleur en fin de titre (rendus par `title_card.py`, bandeau rose arrondi + ombre cyan), nom du streamer + situation (« Squeezie n'aide plus personne sur GTA 6 💀😂 »). Objectif : donner envie de rire ou de voir le jeu dès la 1re seconde.
+- Titres : ≤ 45 caractères + 2–3 emojis couleur en fin de titre (rendus par `title_card.py` avec les emojis **Apple** fournis par le propriétaire dans `branding/emoji/` — n'utiliser QUE ceux de `map.json` : 😂💀😭🤣😱🤯🔥😳🥶👀🚔💸💰🦀✈️🚗💥❤️💔👊🙏😤🫠🤡 ; bandeau rose arrondi + ombre cyan), nom du streamer + situation (« Squeezie n'aide plus personne sur GTA 6 💀😂 »). Objectif : donner envie de rire ou de voir le jeu dès la 1re seconde.
 - Descriptions : phrase choc + emojis / question qui fait commenter + 👇 / `🎥 Twitch : <Nom>` / hashtags FR.
 - Tutoiement, langage des viewers (« dinguerie », « plus jamais », « il a pas osé »), jamais méchant envers le streamer.
 
