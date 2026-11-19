@@ -113,7 +113,7 @@ def render(date, manifest_path=None):
     history = load(HISTORY, {})
     for c in manifest:
         d = ROOT / c["dir"]
-        out_dir = ROOT / "output" / date / c["streamer"]
+        out_dir = ROOT / "output" / date / c["streamer"] / Path(c["dir"]).parent.name  # one folder per lot: never overwrite another lot
         out_dir.mkdir(parents=True, exist_ok=True)
         name = Path(c["dir"]).name
         words = json.loads((d / "words.json").read_text())
