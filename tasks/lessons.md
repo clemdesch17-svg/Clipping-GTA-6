@@ -15,3 +15,6 @@ Format : [date] | ce qui a mal tourné | règle pour l’éviter
 [2026-11-19] | Facecam ratée sur gameplay calme / visages du jeu | Positions connues par streamer (`facecams` dans streamers.json) en secours, avec vérification d'un visage qui bouge
 [2026-11-19] | Double sous-titres : le streamer a ses propres sous-titres incrustés | Ne garder que le haut du gameplay (GAME_SRC_H = 940) ; vérifier une image par vidéo
 [2026-11-19] | Clips jugés trop courts (16–30 s) | Durée cible 30–45 s : garder le contexte avant la punchline
+[2026-11-19] | Transcription d'un VOD entier de 8 h avec le modèle « base » : texte inexploitable, et bien trop long avec « small » | Partir des clips viewers (signal humain), les localiser dans le VOD par corrélation audio, puis découper 30–45 s autour
+[2026-11-19] | ffmpeg/--download-sections ne passe pas par le proxy (DNS) | Télécharger les segments HLS en Python (`vod_cut.py`), puis découper localement
+[2026-11-19] | Localisation audio d'un clip avec un score < 0,6 → mauvais passage | Toujours retranscrire la découpe et vérifier qu'elle contient bien la phrase attendue

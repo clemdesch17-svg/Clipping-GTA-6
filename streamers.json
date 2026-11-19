@@ -31,6 +31,26 @@
   ]
  },
  {
+  "login": "anyme023",
+  "per_day": 5,
+  "active": true,
+  "facecams": [
+   [
+    0,
+    0,
+    424,
+    252
+   ],
+   [
+    1498,
+    130,
+    422,
+    250
+   ]
+  ],
+  "vod_public": true
+ },
+ {
   "login": "michou",
   "per_day": 5,
   "active": true

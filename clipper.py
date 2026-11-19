@@ -135,6 +135,14 @@ GAME_SRC_H = 940
 def layout(facecam):
     """Return (filter graph ending in [base], subtitle y, title y)."""
     pink, cyan = "0x" + BRAND["pink"], "0x" + BRAND["cyan"]
+    if isinstance(facecam, dict):
+        # Webcam fills the whole stream (no gameplay): 9:16 crop centred on
+        # the streamer, facecam = {"full": <x of the face in 1920x1080>}.
+        cw = 608
+        x = int(min(max(facecam["full"] - cw / 2, 0), 1920 - cw))
+        vf = (f"[0:v]scale=1920:1080,crop={cw}:1080:{x}:0,scale={W}:{H},"
+              f"drawbox=y={H - 22}:w={W}:h=8:color={cyan}:t=fill[base]")
+        return vf, int(H * 0.70), int(H * 0.16)
     if facecam:
         # Facecam band on top, gameplay below (centre crop, avoids side cams),
         # neon pink/cyan separator between the two.

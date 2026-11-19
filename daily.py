@@ -105,11 +105,11 @@ def prepare(date):
     print(f"-> {work / 'manifest.json'}")
 
 
-def render(date):
+def render(date, manifest_path=None):
     from clipper import render as render_clip
 
     work = ROOT / "work" / date
-    manifest = load(work / "manifest.json", [])
+    manifest = load(Path(manifest_path) if manifest_path else work / "manifest.json", [])
     history = load(HISTORY, {})
     for c in manifest:
         d = ROOT / c["dir"]
@@ -134,8 +134,12 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("step", choices=["prepare", "render"])
     p.add_argument("--date", default=dt.date.today().isoformat())
+    p.add_argument("--manifest", help="render this manifest instead of work/<date>/manifest.json")
     a = p.parse_args()
-    {"prepare": prepare, "render": render}[a.step](a.date)
+    if a.step == "render":
+        render(a.date, a.manifest)
+    else:
+        prepare(a.date)
 
 
 if __name__ == "__main__":

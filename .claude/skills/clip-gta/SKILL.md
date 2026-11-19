@@ -17,6 +17,9 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
    TOUS les clips GTA VI de la semaine. Lire toutes les transcriptions et ne garder que les moments
    **drôles** (réaction, galère, punchline) ou où il **parle du jeu** (mécaniques, détails, comparaison).
    Le nombre de vues seul donne des clips moyens. Un même moment clippé plusieurs fois → garder la meilleure version.
+   **Si les VOD du streamer sont publics** (`"vod_public": true`) : localiser chaque bon clip dans le VOD
+   (`vod_cut.py locate`, score ≥ 0,6), puis `vod_cut.py cut <vod> <début> <fin>` pour obtenir 30–45 s avec plus
+   de contexte. Retranscrire la découpe pour vérifier. Webcam plein écran → `"facecam": {"full": <x du visage>}`.
 1. `python3 daily.py prepare` → télécharge, détecte la facecam, transcrit. Écrit `work/<date>/manifest.json`.
 2. Pour CHAQUE clip du manifest, lire `transcript` (et les mots horodatés dans `<dir>/words.json`) puis écrire :
    - `hook` : titre d'accroche affiché sur la vidéo, ≤ 45 caractères, sans emoji, nom du streamer + situation drôle/choc
