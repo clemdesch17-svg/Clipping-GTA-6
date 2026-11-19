@@ -53,7 +53,22 @@
  {
   "login": "michou",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    4,
+    412,
+    448,
+    252
+   ],
+   [
+    8,
+    20,
+    448,
+    252
+   ]
+  ],
+  "vod_public": true
  },
  {
   "login": "gotaga",
