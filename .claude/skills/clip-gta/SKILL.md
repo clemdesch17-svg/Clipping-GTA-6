@@ -8,7 +8,7 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
 ## Ligne éditoriale
 - Streamers **français** uniquement, jeu **Grand Theft Auto VI** uniquement (pas GTA V).
 - Rotation : `per_day` clips par streamer actif (défaut 5), tous les streamers actifs chaque jour.
-- Source : clips Twitch publics les plus vus des 7 derniers jours (déjà validés par les viewers).
+- Source : tous les clips Twitch publics GTA VI des 7 derniers jours, sélectionnés à la lecture des transcriptions (pas seulement aux vues).
 - Jamais deux fois le même clip (`history.json`, à committer).
 - Toujours créditer le streamer (« 🎥 Twitch : <Nom> » dans la description).
 
