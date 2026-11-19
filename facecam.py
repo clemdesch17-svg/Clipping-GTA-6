@@ -17,6 +17,7 @@ SRC_W, SRC_H = 1920, 1080
 SCALE = 2                       # analyse at 960x540
 CAM_ASPECT = 1080 / 640         # aspect of the facecam band in the output
 STATIC_STD = 12                 # temporal std below which a pixel is "static"
+MIN_FACE_MOTION = 4             # temporal std a live face must exceed
 STATIC_FRAC = 0.5               # share of static pixels needed to grow a side
 
 
@@ -42,8 +43,15 @@ def stable_face(frames):
     cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     faces = []
+    std = np.stack([f.astype(np.float32) for f in frames]).std(axis=0)
     for f in frames:
-        for (x, y, w, h) in cascade.detectMultiScale(f, 1.1, 5, minSize=(24, 24)):
+        # Upscale x2 so small facecams (face ~12 px at analysis size) are found.
+        big = cv2.resize(f, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+        for (x, y, w, h) in cascade.detectMultiScale(big, 1.1, 5, minSize=(24, 24)):
+            x, y, w, h = x / 2, y / 2, w / 2, h / 2
+            # A real streamer moves; overlays/avatars (static images) don't.
+            if std[int(y):int(y + h), int(x):int(x + w)].mean() < MIN_FACE_MOTION:
+                continue
             faces.append((x + w / 2, y + h / 2, w))
     best, best_hits = None, 0
     for cx, cy, w in faces:
@@ -97,10 +105,27 @@ def to_band(box, face):
     return x, y, w, h
 
 
-def detect(src):
-    frames = sample_frames(src)
-    if len(frames) < 4:
-        return None
+def face_hits(frames, box):
+    """Number of frames with a (moving) face inside `box` (1920x1080 coords)."""
+    cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    x, y, w, h = (v // SCALE for v in box)
+    crops = [f[y:y + h, x:x + w] for f in frames]
+    if not crops or crops[0].size == 0:
+        return 0
+    std = np.stack([c.astype(np.float32) for c in crops]).std(axis=0)
+    hits = 0
+    for c in crops:
+        big = cv2.resize(c, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        for (fx, fy, fw, fh) in cascade.detectMultiScale(big, 1.1, 5, minSize=(30, 30)):
+            fx, fy, fw, fh = (v // 3 for v in (fx, fy, fw, fh))
+            if std[fy:fy + fh, fx:fx + fw].mean() >= MIN_FACE_MOTION:
+                hits += 1
+                break
+    return hits
+
+
+def generic(frames):
     face = stable_face(frames)
     if face is None:
         return None
@@ -113,6 +138,22 @@ def detect(src):
     if not (0.015 < area < 0.35) or not (0.8 < w / max(h, 1) < 3):
         return None
     return tuple(int(v) for v in to_band((x, y, w, h), face))
+
+
+def detect(src, known=()):
+    """Facecam box: generic detection first; if it fails (calm gameplay,
+    in-game faces), fall back to the streamer's known boxes that contain a
+    live face (most hits, then the tightest box)."""
+    frames = sample_frames(src)
+    if len(frames) < 4:
+        return None
+    box = generic(frames)
+    if box or not known:
+        return box
+    need = max(3, len(frames) * 0.3)
+    scored = [(face_hits(frames, b), -b[2] * b[3], tuple(b)) for b in known]
+    scored = [sc for sc in scored if sc[0] >= need]
+    return max(scored)[2] if scored else None
 
 
 if __name__ == "__main__":

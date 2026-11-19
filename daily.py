@@ -94,7 +94,7 @@ def prepare(date):
                 subprocess.run(["yt-dlp", "-q", "-o", str(src), c["url"]], check=True)
             words = transcribe(str(src), 0, c["duration"] or 60)
             save(d / "words.json", words)
-            c.update(dir=str(d.relative_to(ROOT)), facecam=detect(str(src)),
+            c.update(dir=str(d.relative_to(ROOT)), facecam=detect(str(src), s.get("facecams", [])),
                      transcript=" ".join(w["w"] for w in words))
             c["hook"] = default_hook(c["title"], c["streamer"])
             c["description"] = default_description(c)

@@ -11,3 +11,6 @@ Format : [date] | ce qui a mal tourné | règle pour l’éviter
 [2026-11-18] | Titres longs coupés hors écran (WrapStyle 2) | WrapStyle 0 + marges ; vérifier une image par vidéo
 [2026-11-18] | `daily.py render` a réécrit les .txt avec les anciennes descriptions du manifest | Toute modif de texte se fait dans work/<date>/manifest.json, jamais directement dans output/
 [2026-11-18] | Envoi des vidéos sur Drive refusé : limite de 4,2 Mo par appel du connecteur | Le connecteur Drive ne sert qu'aux textes ; les vidéos passent par un autre canal
+[2026-11-19] | Sélection des clips au nombre de vues = clips moyens | Transcrire TOUS les clips GTA VI (~90) et choisir à la lecture : drôle ou analyse du jeu
+[2026-11-19] | Facecam ratée sur gameplay calme / visages du jeu | Positions connues par streamer (`facecams` dans streamers.json) en secours, avec vérification d'un visage qui bouge
+[2026-11-19] | Double sous-titres : le streamer a ses propres sous-titres incrustés | Ne garder que le haut du gameplay (GAME_SRC_H = 940) ; vérifier une image par vidéo

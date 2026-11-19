@@ -127,6 +127,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 GRADE = "eq=saturation=1.2:contrast=1.06"     # punchier gameplay colours
+# Keep only the top of the gameplay: hides streamers' own burned-in live
+# captions and the minimap, which sit in the bottom ~13% of the screen.
+GAME_SRC_H = 940
 
 
 def layout(facecam):
@@ -138,10 +141,10 @@ def layout(facecam):
         fx, fy, fw, fh = facecam
         cam_h = round(W * fh / fw / 2) * 2
         game_h = H - cam_h
-        crop_w = round(1080 * W / game_h / 2) * 2
+        crop_w = round(GAME_SRC_H * W / game_h / 2) * 2
         vf = (f"[0:v]scale=1920:1080,split[a][b];"
               f"[a]crop={fw}:{fh}:{fx}:{fy},scale={W}:{cam_h}[cam];"
-              f"[b]crop={crop_w}:1080:(in_w-{crop_w})/2:0,scale={W}:{game_h},{GRADE}[game];"
+              f"[b]crop={crop_w}:{GAME_SRC_H}:(in_w-{crop_w})/2:0,scale={W}:{game_h},{GRADE}[game];"
               f"[cam][game]vstack,"
               f"drawbox=y={cam_h - 5}:w={W}:h=10:color={pink}:t=fill,"
               f"drawbox=y={cam_h + 5}:w={W}:h=4:color={cyan}:t=fill[base]")
@@ -151,7 +154,7 @@ def layout(facecam):
     top = (H - game_h) // 2
     vf = (f"[0:v]scale=1920:1080,split[a][b];"
           f"[a]crop=608:1080,scale={W}:{H},boxblur=30:2,eq=brightness=-0.2[bg];"
-          f"[b]crop=864:1080,scale={W}:{game_h},{GRADE}[game];"
+          f"[b]crop={GAME_SRC_H * 4 // 5 // 2 * 2}:{GAME_SRC_H}:(in_w-out_w)/2:0,scale={W}:{game_h},{GRADE}[game];"
           f"[bg][game]overlay=0:{top},"
           f"drawbox=y={top - 8}:w={W}:h=8:color={pink}:t=fill,"
           f"drawbox=y={top + game_h}:w={W}:h=8:color={cyan}:t=fill[base]")
