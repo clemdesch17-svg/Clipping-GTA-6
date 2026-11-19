@@ -98,7 +98,16 @@
  {
   "login": "kamet0",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    1518,
+    180,
+    392,
+    222
+   ]
+  ],
+  "vod_public": true
  },
  {
   "login": "sardoche",
