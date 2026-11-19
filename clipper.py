@@ -16,6 +16,8 @@ from pathlib import Path
 
 import numpy as np
 
+from title_card import render_title
+
 W, H = 1080, 1920
 BRAND = json.loads((Path(__file__).resolve().parent / "brand.json").read_text())
 FONT = BRAND["font"]
@@ -92,12 +94,10 @@ Style: Handle,{FONT},30,&H40FFFFFF,&H40FFFFFF,&H80000000,&H80000000,-1,-1,0,0,10
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     lines = [f"Dialogue: 2,{ts(0)},{ts(9999)},Handle,,0,0,0,,{BRAND['handle']}"]
-    if title:
-        lines.append(f"Dialogue: 1,{ts(0)},{ts(9999)},Title,,0,0,0,,"
-                     f"{{\\pos({W // 2},{title_y})}}{title.upper()}")
+    # The hook title itself is a PNG card (colour emojis), see title_card.py.
     if kicker:
         lines.append(f"Dialogue: 1,{ts(0)},{ts(9999)},Kicker,,0,0,0,,"
-                     f"{{\\pos({W // 2},{title_y - 78})}}▶ {kicker.upper()}")
+                     f"{{\\pos({W // 2},{title_y})}}▶ {kicker.upper()}")
 
     # Group words into short chunks; break on long pauses.
     chunks, cur = [], []
@@ -174,15 +174,19 @@ def render(src, out, start, end, facecam, title, words, kicker=""):
     dur = end - start
     bar = 14
     with tempfile.TemporaryDirectory() as tmp:
+        card = Path(tmp) / "title.png"
+        cw, ch = render_title(title or " ", str(card))
+        card_y = max(title_y - ch // 2, 70)
         ass = Path(tmp) / "subs.ass"
-        ass.write_text(build_ass(words, title, sub_y=sub_y, title_y=title_y,
+        ass.write_text(build_ass(words, title, sub_y=sub_y, title_y=card_y - 34,
                                  kicker=kicker), encoding="utf-8")
         # Neon progress bar filling up along the bottom edge (retention).
         graph = (f"{vf};color=c=0x{BRAND['pink']}:s={W}x{bar}:d={dur}[bar];"
-                 f"[base][bar]overlay=x='-w+w*t/{dur:.3f}':y={H - bar}:eof_action=pass,"
-                 f"ass={ass}[v]")
+                 f"[base][bar]overlay=x='-w+w*t/{dur:.3f}':y={H - bar}:eof_action=pass[pb];"
+                 + (f"[pb][1:v]overlay=x=(W-w)/2:y={card_y}[tc];" if title else "[pb]null[tc];")
+                 + f"[tc]ass={ass}[v]")
         run(["ffmpeg", "-v", "error", "-y", "-ss", str(start), "-to", str(end),
-             "-i", src, "-filter_complex", graph,
+             "-i", src, "-i", str(card), "-filter_complex", graph,
              "-map", "[v]", "-map", "0:a",
              "-c:v", "libx264", "-preset", "medium", "-crf", "23",
              "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",

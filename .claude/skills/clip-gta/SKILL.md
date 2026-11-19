@@ -22,8 +22,10 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
    de contexte. Retranscrire la découpe pour vérifier. Webcam plein écran → `"facecam": {"full": <x du visage>}`.
 1. `python3 daily.py prepare` → télécharge, détecte la facecam, transcrit. Écrit `work/<date>/manifest.json`.
 2. Pour CHAQUE clip du manifest, lire `transcript` (et les mots horodatés dans `<dir>/words.json`) puis écrire :
-   - `hook` : titre d'accroche affiché sur la vidéo, ≤ 45 caractères, sans emoji, nom du streamer + situation drôle/choc
-     (ex. « Squeezie n'aide plus personne sur GTA 6 », « Le roi de l'infiltration sur GTA 6 »).
+   - `hook` : titre d'accroche affiché sur la vidéo, ≤ 45 caractères + **2 à 3 emojis en fin de titre** qui donnent
+     le ton (😂💀😭 pour le drôle, 🤯🔥😱 pour le jeu, 🚔💸🦀✈️ pour illustrer). Nom du streamer + situation drôle/choc
+     (ex. « Squeezie n'aide plus personne sur GTA 6 💀😂 », « Anyme découvre l'arme ultime : le crabe 🦀😂 »).
+     Les emojis sont rendus en couleur par `title_card.py`.
    - `start` / `end` (secondes) : couper les blancs du début, finir juste après la punchline. **Durée cible : 30–45 s** (demande du propriétaire du compte) — garder le contexte avant la punchline plutôt que couper trop serré.
    - `description` : 1 phrase punchy + emojis, puis une QUESTION pour faire commenter
      (« T'aurais fait quoi à sa place ? 👇 »), puis `🎥 Twitch : <Nom>`, puis

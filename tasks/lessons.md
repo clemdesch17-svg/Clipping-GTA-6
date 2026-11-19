@@ -20,3 +20,4 @@ Format : [date] | ce qui a mal tourné | règle pour l’éviter
 [2026-11-19] | Localisation audio d'un clip avec un score < 0,6 → mauvais passage | Toujours retranscrire la découpe et vérifier qu'elle contient bien la phrase attendue
 [2026-11-19] | 1er lot Anyme rejeté : clips viewers peu nombreux et faibles (réglages, manette) | Sur VOD public : repérer les fenêtres les plus « énergiques » (son soutenu vs médiane locale), transcrire en « small », garder délires / action / avis tranchés
 [2026-11-19] | Facecam décalée : un ciel de jeu immobile a fusionné avec la webcam | Contrôler la bande facecam sur l'aperçu de CHAQUE vidéo ; corriger via `facecam` dans le manifest
+[2026-11-19] | Titres jugés pas assez accrocheurs (phrase seule, sans emoji) ; libass n'affiche pas les emojis couleur | Bandeau titre rendu en PNG par title_card.py (Pillow + Noto Color Emoji), 2–3 emojis par titre ; split(" ") pour garder les espaces insécables
