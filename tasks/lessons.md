@@ -14,3 +14,4 @@ Format : [date] | ce qui a mal tourné | règle pour l’éviter
 [2026-11-19] | Sélection des clips au nombre de vues = clips moyens | Transcrire TOUS les clips GTA VI (~90) et choisir à la lecture : drôle ou analyse du jeu
 [2026-11-19] | Facecam ratée sur gameplay calme / visages du jeu | Positions connues par streamer (`facecams` dans streamers.json) en secours, avec vérification d'un visage qui bouge
 [2026-11-19] | Double sous-titres : le streamer a ses propres sous-titres incrustés | Ne garder que le haut du gameplay (GAME_SRC_H = 940) ; vérifier une image par vidéo
+[2026-11-19] | Clips jugés trop courts (16–30 s) | Durée cible 30–45 s : garder le contexte avant la punchline

@@ -21,7 +21,7 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
 2. Pour CHAQUE clip du manifest, lire `transcript` (et les mots horodatés dans `<dir>/words.json`) puis écrire :
    - `hook` : titre d'accroche affiché sur la vidéo, ≤ 45 caractères, sans emoji, nom du streamer + situation drôle/choc
      (ex. « Squeezie n'aide plus personne sur GTA 6 », « Le roi de l'infiltration sur GTA 6 »).
-   - `start` / `end` (secondes) : couper les blancs du début, finir juste après la punchline. Cible 15–40 s.
+   - `start` / `end` (secondes) : couper les blancs du début, finir juste après la punchline. **Durée cible : 30–45 s** (demande du propriétaire du compte) — garder le contexte avant la punchline plutôt que couper trop serré.
    - `description` : 1 phrase punchy + emojis, puis une QUESTION pour faire commenter
      (« T'aurais fait quoi à sa place ? 👇 »), puis `🎥 Twitch : <Nom>`, puis
      `#gta6 #gtavi #gta6fr #<streamer> #twitchfr #streamerfr #gaming #fyp #pourtoi`.

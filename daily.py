@@ -20,6 +20,7 @@ STREAMERS = ROOT / "streamers.json"
 HISTORY = ROOT / "history.json"
 GAME = "Grand Theft Auto VI"
 SAME_MOMENT_S = 90          # clips created this close together = same moment
+MAX_LEN = 45                # seconds; target length is 30–45 s
 
 
 def load(path, default):
@@ -117,7 +118,7 @@ def render(date):
         name = Path(c["dir"]).name
         words = json.loads((d / "words.json").read_text())
         start = c.get("start", 0)
-        end = min(c.get("end") or c["duration"] or 60, start + 60)
+        end = min(c.get("end") or c["duration"] or 60, start + MAX_LEN)
         words = [dict(w, s=w["s"] - start, e=w["e"] - start)
                  for w in words if start <= w["s"] < end]
         render_clip(str(d / "src.mp4"), str(out_dir / f"{name}.mp4"),
