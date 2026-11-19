@@ -11,6 +11,10 @@ from clipper import transcribe
 
 login, out = sys.argv[1], sys.argv[2]
 used = set(load(HISTORY, {}))
+# optional 3rd arg: JSON list of slugs already processed (skip them)
+EXCLUDE = sys.argv[3] if len(sys.argv) > 3 else None
+if EXCLUDE:
+    used |= set(json.load(open(EXCLUDE)))
 listing = []
 for rng in ("24hr", "7d"):
     listing += ytdlp("--flat-playlist", "--playlist-end", "100", "-j",
