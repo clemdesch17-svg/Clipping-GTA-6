@@ -202,5 +202,75 @@
   "login": "tonton",
   "per_day": 5,
   "active": true
+ },
+ {
+  "login": "wati",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "fakemonster",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "joueur_du_grenier",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "rebeudeter",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "bagherajones",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "xari",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "sneakylol",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "horty",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "lege",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "kaatsup",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "chowh1",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "ibratv",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "nikof",
+  "per_day": 5,
+  "active": true
+ },
+ {
+  "login": "itachi",
+  "per_day": 5,
+  "active": true
  }
 ]
