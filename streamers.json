@@ -162,7 +162,16 @@
  {
   "login": "jltomy",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    30,
+    452,
+    412,
+    230
+   ]
+  ],
+  "vod_public": true
  },
  {
   "login": "lebouseuh",
