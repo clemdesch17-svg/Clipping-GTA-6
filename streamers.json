@@ -73,7 +73,27 @@
  {
   "login": "gotaga",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    1494,
+    392,
+    414,
+    232
+   ],
+   [
+    1494,
+    128,
+    414,
+    232
+   ],
+   [
+    8,
+    0,
+    420,
+    220
+   ]
+  ]
  },
  {
   "login": "locklear",
