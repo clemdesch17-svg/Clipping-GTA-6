@@ -108,7 +108,15 @@
  {
   "login": "amixem",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    36,
+    92,
+    520,
+    290
+   ]
+  ]
  },
  {
   "login": "inoxtag",
