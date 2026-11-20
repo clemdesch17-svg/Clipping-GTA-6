@@ -12,6 +12,14 @@ description: Produire le lot quotidien de clips TikTok GTA 6 (streamers françai
 - Jamais deux fois le même clip (`history.json`, à committer).
 - Toujours créditer le streamer (« 🎥 Twitch : <Nom> » dans la description).
 
+## Goût du propriétaire (validé sur ses choix)
+Clips gardés : la dépanneuse, Bambi, la bagarre et le saut en moto de Michou ; les galères d'Anyme (bus, camping, Fenwick).
+Priorité, dans cet ordre :
+1. **Action / tirs / bagarres** (fusillades, courses-poursuites, embrouilles qui dégénèrent).
+2. **Ça doit faire rire** : galère, fail, mort absurde, réaction du streamer.
+3. **RP intéressant** : le streamer qui joue un rôle, invente une histoire, parle aux PNJ comme dans un film.
+À éviter : réglages, découverte de la carte, discussions calmes sur le jeu, blagues crues (ban TikTok).
+
 ## Procédure
 0. **Sélection (le plus important)** : `python3 harvest.py <login> work/harvest/<login>` récupère et transcrit
    TOUS les clips GTA VI de la semaine. Lire toutes les transcriptions et ne garder que les moments
