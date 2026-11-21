@@ -109,7 +109,7 @@
  {
   "login": "zerator",
   "per_day": 5,
-  "active": true,
+  "active": false,
   "facecams": [
    [
     8,
@@ -169,7 +169,7 @@
  {
   "login": "domingo",
   "per_day": 5,
-  "active": true,
+  "active": false,
   "facecams": [
    [
     1440,
@@ -306,7 +306,7 @@
  {
   "login": "chowh1",
   "per_day": 5,
-  "active": true,
+  "active": false,
   "facecams": [
    [
     20,
