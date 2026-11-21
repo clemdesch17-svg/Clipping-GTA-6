@@ -25,3 +25,4 @@ Format : [date] | ce qui a mal tourné | règle pour l’éviter
 [2026-11-19] | Le 2e lot Michou a écrasé les vidéos du 1er lot (mêmes noms 01..05 dans output/<date>/<Streamer>/) | Sortie par lot : output/<date>/<Streamer>/<lot>/ ; ne jamais réutiliser un dossier de sortie
 [2026-11-20] | Le propriétaire veut surtout de l'action/des tirs, du drôle et du RP, pas de la découverte calme du jeu | Section « Goût du propriétaire » dans le skill clip-gta, à appliquer à chaque sélection
 [2026-11-20] | ffmpeg vstack/hstack plante (malloc corrupted) sur des JPG dans ce conteneur | Faire les planches d'aperçu avec Pillow
+[2026-11-21] | Demande : privilégier les clips les plus RÉCENTS (ce qui buzz maintenant) | fresh.py <heures> sur les streamers en live + ceux qui buzzent, puis fetch_list.py ; sélection à la lecture

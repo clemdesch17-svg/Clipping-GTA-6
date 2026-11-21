@@ -66,6 +66,12 @@
     20,
     448,
     252
+   ],
+   [
+    8,
+    440,
+    412,
+    240
    ]
   ],
   "vod_public": true
@@ -103,7 +109,15 @@
  {
   "login": "zerator",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    8,
+    532,
+    440,
+    256
+   ]
+  ]
  },
  {
   "login": "amixem",
@@ -155,7 +169,15 @@
  {
   "login": "domingo",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    1440,
+    144,
+    448,
+    252
+   ]
+  ]
  },
  {
   "login": "ponce",
@@ -284,7 +306,15 @@
  {
   "login": "chowh1",
   "per_day": 5,
-  "active": true
+  "active": true,
+  "facecams": [
+   [
+    20,
+    88,
+    540,
+    312
+   ]
+  ]
  },
  {
   "login": "ibratv",
